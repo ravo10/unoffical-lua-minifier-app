@@ -1,0 +1,91 @@
+<div class="wrapper">
+    <div @feilMelding *ngIf="feilMelding" class="feil-melding">{{ feilMelding }}</div>
+
+    <div #antalFiler class="antalFiler"
+        [innerHTML]="totaleMengderFilerVisuellStatus.length == 0 ? (filtererFiler ? 'Checking files...' : '<i>No files picked.</i>') : 'Found <u>' + totaleMengderFilerVisuellStatus.length + '</u> file' + (totaleMengderFilerVisuellStatus.length != 1 ? 's' : '') + ' that can be minified!'">
+    </div>
+
+    <div class="fil-utdata-mappe">
+        <h4 style="color: black;">
+            Output-folder
+            <label class="utdata-mappe-velger"
+                matTooltip="Pick a folder with atleast one file inside, or copy the path.">
+                <mat-icon style="vertical-align: sub;">add_circle_outline</mat-icon>
+                <input #utdataMappeVelger type="file" multiple webkitdirectory (click)="utdataMappeVelger.value = [];"
+                    (change)="settUtDataMappeFraaVelger(utdataMappeVelger.files)">
+            </label>
+            <sup> (You can not minify, minified files)</sup></h4>
+        <input #outputFolder type="text" (input)="utDataMappe = outputFolder.value;" required
+            placeholder="Will automatically pick the first file in the array of picked files">
+    </div>
+    <br>
+    <br>
+    <div class="fil-velger filer">
+        <label>
+            FILES <mat-icon>attachment</mat-icon>
+            <input #luaFiler type="file" multiple accept=".lua" (click)="luaFiler.value = [];"
+                (change)="filerValt(luaFiler.files)">
+        </label>
+    </div>
+    <br>
+    <div class="fil-velger mappe">
+        <label>
+            FOLDER <mat-icon>folder</mat-icon>
+            <input #luaFolder type="file" multiple webkitdirectory (click)="luaFolder.value = [];"
+                (change)="filerValt(luaFolder.files)">
+        </label>
+    </div>
+    <br>
+    <br>
+    <div class="fil-utdata-mappe">
+        <input #fileComment type="text" placeholder="Add a comment to every file at Ln. 1 Col. 1 (optional)...">
+    </div>
+    <br>
+    <div class="valte-filer">
+        <span style="position: absolute;left: 15px; top: 7px;">
+            <b>NOTE</b>:
+            <u>Files in the same location, will be overwritten!</u>
+        </span>
+        <br>
+        <span>
+            #File(s)
+            <span (click)="klarerAlt()" style="cursor: pointer;" matTooltip="Clear list">
+                <mat-icon style="vertical-align: middle;">clear_all</mat-icon>
+                <u>clear</u>
+            </span>
+            :
+            <!-- Prosent ferdig (antal filer behandlet) -->
+            <span *ngIf="noverandOperasjonProsentFerdig || visProgresjonFiler">
+                <span *ngIf="noverandOperasjonHeiltFerdig else snartFerdig">100% complete!</span>
+                <ng-template #snartFerdig>{{ noverandOperasjonProsentFerdig && noverandOperasjonProsentFerdig.length > 0 ? noverandOperasjonProsentFerdig : 'N/A' }}% complete</ng-template>
+            </span>
+        </span>
+        <br>
+        <br>
+        <div>
+            <div @filListe *ngFor="let filVisuell of totaleMengderFilerVisuellStatus;index as i;">
+                <div
+                    *ngIf="totaleMengderFilerVisuellStatus[i].data && totaleMengderFilerVisuellStatus[i].data.name === filVisuell.data.name">
+                    <button mat-icon-button [disabled]="!noverandOperasjonHeiltFerdig ? true : false"
+                        (click)="slettFilIFerdigeArrayer(i)">
+                        <mat-icon style="vertical-align: middle;color: red;cursor: pointer;"
+                            [matTooltip]="filVisuell && filVisuell.data ? 'Remove «' + filVisuell.data.name + '»' : 'Remove «N/A»'">
+                            delete_forever
+                        </mat-icon>
+                    </button> <span
+                        [style.color]="filVisuell.status === 'Fail!' ? 'red' : ''">{{ filVisuell.status }}</span>
+                    ({{ filVisuell.indeks }}) $:
+                    <u (click)="filVisuell.visPath = !filVisuell.visPath;"
+                        style="cursor: pointer;">{{ filVisuell ? (filVisuell.visPath ? filVisuell.data.path : '.../' + filVisuell.data.name) : 'N/A' }}</u>
+                    <div *ngIf="filVisuell.melding" class="feil-melding">{{ filVisuell.melding }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <button class="minifiser-knapp" type="button" mat-raised-button color="accent"
+        (click)="minifiserFiler(totaleMengderFiler)"
+        [disabled]="totaleMengderFiler.length == 0 || utDataMappe.length == 0 || !noverandOperasjonHeiltFerdig ? true : false">MINIFY!</button>
+</div>

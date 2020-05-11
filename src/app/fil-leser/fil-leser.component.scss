@@ -1,0 +1,140 @@
+.wrapper {
+    width: 100%;
+
+    .feil-melding {
+        font-family: monospace;
+        display: block;
+        width: 100%;
+        height: 90px;
+        background-color: #222222;
+        color: red;
+        margin: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        max-width: 600px;
+        border: 1px dotted;
+        overflow-y: scroll;
+    }
+
+    .antalFiler {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        color: white;
+    }
+
+    .fil-velger {
+        width: 100%;
+        height: 50px;
+
+        label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: blue;
+            color: white;
+            border: 4px solid;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 18px;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            letter-spacing: 10px;
+            font-weight: bold;
+            box-sizing: border-box;
+            cursor: pointer;
+            transition: 300ms ease;
+            user-select: none;
+
+            input[type=file] {
+                display: none;
+            }
+
+            &:hover {
+                background-color: lighten($color: blue, $amount: 7%);
+            }
+
+            &:active {
+                background-color: darken($color: blue, $amount: 8%);
+            }
+        }
+
+        .filer {}
+
+        .mappe {}
+    }
+
+    .fil-utdata-mappe {
+        .utdata-mappe-velger {
+            cursor: pointer;
+
+            >input {
+                display: none;
+            }
+        }
+
+        input {
+            display: block;
+            box-sizing: border-box;
+            padding: 10px;
+            border: 3px solid black;
+            width: 100%;
+            font-style: italic;
+            outline: none;
+
+            &:focus {
+                border-color: blue;
+            }
+        }
+    }
+
+    .valte-filer {
+        position: relative;
+        width: 100%;
+        height: 200px;
+        box-sizing: border-box;
+        padding: 20px 60px;
+        font-family: monospace;
+        background-color: #222222;
+        color: green;
+        overflow-y: scroll;
+        border: 1px solid #ffd740;
+
+        >span {
+            color: white;
+            font-style: italic;
+        }
+
+        /* Alle filer.. */
+        >div {
+            >div {
+                >div {
+                    word-break: break-all;
+
+                    >span {
+                        display: inline-block;
+                        margin-bottom: 3px;
+                        font-style: italic;
+                    }
+
+                    .feil-melding {
+                        color: red;
+                        margin: 20px 0;
+                        margin-left: 20px;
+                        padding: 10px;
+                        box-sizing: border-box;
+                        max-width: 600px;
+                        border: 1px dotted;
+                        word-break: break-all;
+                    }
+                }
+            }
+        }
+    }
+
+    .minifiser-knapp {
+        width: 100%;
+        height: 50px;
+        font-size: 25px;
+    }
+}
