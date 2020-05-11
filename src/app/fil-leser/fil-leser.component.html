@@ -17,6 +17,11 @@
             <sup> (You can not minify, minified files)</sup></h4>
         <input #outputFolder type="text" (input)="utDataMappe = outputFolder.value;" required
             placeholder="Will automatically pick the first file in the array of picked files">
+
+        <br>
+        <label class="same-mappe-struktur">
+            <mat-checkbox [(ngModel)]="skalLageSammeMappeStruktur" color="primary">Produce the same folder structure (default)</mat-checkbox>
+        </label>
     </div>
     <br>
     <br>
@@ -57,7 +62,9 @@
             <!-- Prosent ferdig (antal filer behandlet) -->
             <span *ngIf="noverandOperasjonProsentFerdig || visProgresjonFiler">
                 <span *ngIf="noverandOperasjonHeiltFerdig else snartFerdig">100% complete!</span>
-                <ng-template #snartFerdig>{{ noverandOperasjonProsentFerdig && noverandOperasjonProsentFerdig.length > 0 ? noverandOperasjonProsentFerdig : 'N/A' }}% complete</ng-template>
+                <ng-template #snartFerdig>
+                    {{ noverandOperasjonProsentFerdig && noverandOperasjonProsentFerdig.length > 0 ? noverandOperasjonProsentFerdig : 'N/A' }}%
+                    complete</ng-template>
             </span>
         </span>
         <br>
@@ -76,7 +83,7 @@
                         [style.color]="filVisuell.status === 'Fail!' ? 'red' : ''">{{ filVisuell.status }}</span>
                     ({{ filVisuell.indeks }}) $:
                     <u (click)="filVisuell.visPath = !filVisuell.visPath;"
-                        style="cursor: pointer;">{{ filVisuell ? (filVisuell.visPath ? filVisuell.data.path : '.../' + filVisuell.data.name) : 'N/A' }}</u>
+                        style="cursor: pointer;font-weight: bolder;">{{ filVisuell ? (filVisuell.visPath ? filVisuell.data.path : '.../' + filVisuell.data.name) : 'N/A' }}</u>
                     <div *ngIf="filVisuell.melding" class="feil-melding">{{ filVisuell.melding }}</div>
                 </div>
             </div>

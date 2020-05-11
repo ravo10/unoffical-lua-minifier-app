@@ -38,6 +38,7 @@ export class FilLeserComponent implements OnInit {
   filtererFiler = false;
   luaFilerValt: FileList;
   visProgresjonFiler = false;
+  skalLageSammeMappeStruktur = true;
 
   constructor(private service: ServicesService) {
     if (window.require) {
@@ -198,6 +199,7 @@ export class FilLeserComponent implements OnInit {
             fil.path,
             this.utDataMappe,
             fil.name,
+            this.skalLageSammeMappeStruktur,
             (ekstraKommentarPaaAlleFiler.length > 0 ? ekstraKommentarPaaAlleFiler : null)
           ].join('$$$')
         );
@@ -206,8 +208,7 @@ export class FilLeserComponent implements OnInit {
           const nyIndex = indeks + 1;
           setTimeout(() => { sendTilMinifisering(nyIndex); }, 50);
         }
-      };
-      sendTilMinifisering(0);
+      }; sendTilMinifisering(0);
     });
 
     this.noverandOperasjonProsentFerdig = null;

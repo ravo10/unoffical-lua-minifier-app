@@ -26,7 +26,8 @@ async function minifiserFilFraaFilData(event, filData) {
     const filSti = filData[2];
     const filUtDataMappe = filData[3];
     const filNamn = filData[4];
-    const ekstraKommentar = filData[5]; // Alternativt
+    const skalLageSammeMappeStruktur = filData[5];
+    const ekstraKommentar = filData[6]; // Alternativt
 
     const sendUtEinError = function (id, index, errorMelding) {
         console.log('Send ut ein error:', id);
@@ -104,8 +105,7 @@ async function minifiserFilFraaFilData(event, filData) {
                 }
 
                 // Skriv data til den nye mappa...
-                const filUtDataMappeFormater = path.parse(filUtDataMappe);
-                fs.writeFile(path.join(filUtDataMappeFormater.dir, filUtDataMappeFormater.base, filNamn), nyLuaData, 'utf8', (err) => {
+                const ferdigAaSkrive = (err) => {
                     if (err) { sendUtEinError('11', index, `New Minified File Write: ${err.message ? err.message : '!message'}`); return; }
                     // ** ALT OK!! **
                     //
@@ -114,7 +114,43 @@ async function minifiserFilFraaFilData(event, filData) {
 
                     // Fin effekt når ferdig
                     setTimeout(() => { if (index + 1 === indexMax) { event.reply('asynchronous-reply', 'ferdig'); } }, 1000);
-                });
+                };
+
+                const filUtDataMappeParsed = path.parse(filUtDataMappe);
+                const filStiMappeParsed = path.parse(filSti);
+
+                if (skalLageSammeMappeStruktur) {
+                    // Skriv inn i samme mappe-strukur fila kom ifrå
+                    const rot = filStiMappeParsed.root;
+                    const baseSti = filStiMappeParsed.dir;
+
+                    // Lag mappene inni den nye mappa
+                    let splitt = '\\';
+                    if (baseSti.match('/')) { splitt = '/' }
+                    let lagDesseMappene = baseSti.slice(rot.length) // Ta vekk rot-plassering (trenger ikkje e.g. "C:\")
+
+                    // Kanskje slett utdata-mappa - 1 mappe ( blir færre unødvendige mapper, innanfor det som kan taes vekk )
+                    let kanksjeSlettDesseMappene = filUtDataMappeParsed.dir.slice(filUtDataMappeParsed.root.length).split(splitt);
+                    kanksjeSlettDesseMappene.pop();
+                    kanksjeSlettDesseMappene = kanksjeSlettDesseMappene.join(splitt);
+                    
+                    // Rediger ( match )
+                    lagDesseMappene = lagDesseMappene.replace(kanksjeSlettDesseMappene, '').split(splitt);
+
+                    // Produser mapper som mangler, og sett saman ferdig mappe-sti
+                    let mappeStiForFil = ''; for (const mappe of lagDesseMappene) {
+                        mappeStiForFil += `${mappe}${splitt}`;
+                        
+                        const ferdigLagaDenneMappa = path.join(filUtDataMappeParsed.dir, filUtDataMappeParsed.base, mappeStiForFil)
+                        const mappeEksisterer = fs.existsSync(ferdigLagaDenneMappa); if (!mappeEksisterer) { fs.mkdirSync(ferdigLagaDenneMappa); }
+                    }
+
+                    // Skriv fil
+                    fs.writeFile(path.join(filUtDataMappeParsed.dir, filUtDataMappeParsed.base, mappeStiForFil, filNamn), nyLuaData, 'utf8', (err) => { ferdigAaSkrive(err) });
+                } else {
+                    // Berre skriv inn i ein mappe, utan nokon ekstra mapper
+                    fs.writeFile(path.join(filUtDataMappeParsed.dir, filUtDataMappeParsed.base, filNamn), nyLuaData, 'utf8', (err) => { ferdigAaSkrive(err) });
+                }
             });
         }
     });

@@ -4,10 +4,10 @@ const path = require('path')
 // Lag vidaug
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: 900,
+        width: 760,
         height: 860,
-        minWidth: 340,
-        minHeight: 740,
+        minWidth: 730,
+        minHeight: 820,
         frame: false,
         backgroundColor: '#ffffff',
         icon: path.join(__dirname, 'dist', 'assets', 'logo.png'),

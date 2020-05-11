@@ -10,7 +10,8 @@
 # dependencies
 /node_modules
 
-# release-builds
+# Builds
+/installerings-filer
 /release-builds
 
 # profiling files

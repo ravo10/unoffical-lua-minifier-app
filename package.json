@@ -1,7 +1,48 @@
 {
+  "build": {
+    "appId": "https://sourceforge.net/projects/lua-minifier/",
+    "productName": "LUA MINIFIER - ravo Norway",
+    "extraMetadata": {
+      "name": "lua-minifier",
+      "author": {
+        "name": "Rasmus Ullestad Relling - Vinterkode Web & Design"
+      },
+      "description": "Minify lua files using the luamin API.",
+      "repository": {
+        "url": "https://github.com/ravo10/unoffical-lua-minifier-app"
+      }
+    },
+    "directories": {
+      "buildResources": "build",
+      "output": "installerings-filer"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "msi",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
+      "icon": "build/logo.ico"
+    }
+  },
   "name": "lua-minifier",
-  "productName": "LUA MINIFIER - by ravo Norway",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "productName": "LUA MINIFIER - ravo Norway",
+  "author": {
+    "name": "Rasmus Ullestad Relling",
+    "url": "https://github.com/ravo10/unoffical-lua-minifier-app"
+  },
   "main": "main.js",
   "scripts": {
     "ng": "ng",
@@ -11,6 +52,8 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "electron": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
     "bygg0": "ng build && electron .",
     "bygg1": "ng build --prod && electron .",
     "byggWindows0": "ng build --prod && electron-packager . lua-minifier-app --overwrite --platform=win32 --arch=ia32 --icon=src/assets/logo.ico --prune=true --out=release-builds --version-string.CompanyName=\"Vinterkode Web & Design\" --version-string.FileDescription=\"Minify lua files using the luamin API.\" --version-string.ProductName=`\"LUA MINIFIER\"",
@@ -46,6 +89,7 @@
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "electron": "^8.2.5",
+    "electron-builder": "^22.6.0",
     "electron-packager": "^14.2.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
