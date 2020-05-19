@@ -81,20 +81,27 @@ async function minifiserFilFraaFilData(event, filData) {
                 const splittaLuaData = gamalLuaData.split('');
                 await new Promise(async res => { setTimeout(() => { res(); }, 300); });
                 let i = 0;
+                const erEitTreff = (index, regExpSjekk) => {
+                    if (
+                        !splittaLuaData[index]
+                        || (
+                            splittaLuaData[index] && splittaLuaData[index].match(regExpSjekk)
+                        )
+                    ) { return true; }
+
+                    return false;
+                };
                 for await (const char of splittaLuaData) {
                     // Kanskje bytt ut med " not " om "!"
-                    const regexpTreff = new RegExp(/([a-zA-Z]|[_]|["]|['])/, '');
+                    // Sjekk eit teikn om gongen
+                    const regexpTreffBak = new RegExp(/(\s|[(])/, '');
+                    const regexpTreffForran = new RegExp(/([a-zæøåA-ZÆØÅ]|[_])/, '');
+
                     if (
-                        (
-                            !splittaLuaData[i - 1]
-                            || splittaLuaData[i - 1] && !splittaLuaData[i - 1].match(regexpTreff)
-                        ) &&
                         char === '!'
-                        && (
-                            !splittaLuaData[i + 1]
-                            || splittaLuaData[i + 1] && splittaLuaData[i + 1].match(regexpTreff)
-                        )
-                        ) { splittaLuaData.splice(i, 1, ' not '); }
+                        && erEitTreff(i - 1, regexpTreffBak)
+                        && erEitTreff(i + 1, regexpTreffForran)
+                    ) { splittaLuaData.splice(i, 1, ' not '); }
 
                     i++;
                 }
@@ -151,14 +158,14 @@ async function minifiserFilFraaFilData(event, filData) {
                     let kanksjeSlettDesseMappene = filUtDataMappeParsed.dir.slice(filUtDataMappeParsed.root.length).split(splitt);
                     kanksjeSlettDesseMappene.pop();
                     kanksjeSlettDesseMappene = kanksjeSlettDesseMappene.join(splitt);
-                    
+
                     // Rediger ( match )
                     lagDesseMappene = lagDesseMappene.replace(kanksjeSlettDesseMappene, '').split(splitt);
 
                     // Produser mapper som mangler, og sett saman ferdig mappe-sti
                     let mappeStiForFil = ''; for (const mappe of lagDesseMappene) {
                         mappeStiForFil += `${mappe}${splitt}`;
-                        
+
                         const ferdigLagaDenneMappa = path.join(filUtDataMappeParsed.dir, filUtDataMappeParsed.base, mappeStiForFil)
                         const mappeEksisterer = fs.existsSync(ferdigLagaDenneMappa); if (!mappeEksisterer) { fs.mkdirSync(ferdigLagaDenneMappa); }
                     }
