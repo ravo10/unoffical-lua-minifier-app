@@ -76,11 +76,29 @@ async function minifiserFilFraaFilData(event, filData) {
                 // Behandle data ( minifiser )
                 let gamalLuaData = data;
                 // Erstatt Teikn i LUA som er godtatt i GLUA til vanlig LUA..
-                gamalLuaData = gamalLuaData.replace(/[!]/gm, ' not '); // Alle "!" med " not "
-                await new Promise(async res => { setTimeout(() => { res(); }, 300); });
-                gamalLuaData = gamalLuaData.replace(/(\snot\s[=]){1,1}/gm, '!='); // **Sett inn igjen " not =" => "!="
-                await new Promise(async res => { setTimeout(() => { res(); }, 300); });
                 gamalLuaData = gamalLuaData.replace(/([!][=]){1,1}/gm, '~='); // Alle "!=" med "~="
+                await new Promise(async res => { setTimeout(() => { res(); }, 300); });
+                const splittaLuaData = gamalLuaData.split('');
+                await new Promise(async res => { setTimeout(() => { res(); }, 300); });
+                let i = 0;
+                for await (const char of splittaLuaData) {
+                    // Kanskje bytt ut med " not " om "!"
+                    const regexpTreff = new RegExp(/([a-zA-Z]|[_]|["]|['])/, '');
+                    if (
+                        (
+                            !splittaLuaData[i - 1]
+                            || splittaLuaData[i - 1] && !splittaLuaData[i - 1].match(regexpTreff)
+                        ) &&
+                        char === '!'
+                        && (
+                            !splittaLuaData[i + 1]
+                            || splittaLuaData[i + 1] && splittaLuaData[i + 1].match(regexpTreff)
+                        )
+                        ) { splittaLuaData.splice(i, 1, ' not '); }
+
+                    i++;
+                }
+                gamalLuaData = splittaLuaData.join('');
                 await new Promise(async res => { setTimeout(() => { res(); }, 300); });
                 gamalLuaData = gamalLuaData.replace(/([&][&]){1,1}/gm, ' and '); // Alle "&&" med " and "
                 await new Promise(async res => { setTimeout(() => { res(); }, 300); });
